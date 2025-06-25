@@ -1,0 +1,13 @@
+# 파이썬 캐시/가상환경
+__pycache__/
+.venv/
+
+# 환경 변수
+key.env
+
+# 출력 이미지
+output/
+
+# 기타 에디터 설정
+*.log
+.vscode/
