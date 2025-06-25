@@ -1,64 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar'; // ✅ 공통 네비게이션 컴포넌트 import
 
 const styles = {
-  body: {
-    margin: 0,
-    fontFamily: "'Noto Sans KR', sans-serif",
-  },
   home: {
     display: 'flex',
     flexDirection: 'column',
-  },
-  navbar: {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '15px 30px',
-  backgroundColor: 'white',
-  borderBottom: '1px solid #ccc',
-},
-
-leftNav: {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '40px', // 로고와 navLinks 사이 간격
-},
-
-navLinks: {
-  display: 'flex',
-  gap: '25px', // 메뉴 간 간격
-},
-
-navLink: {
-  textDecoration: 'none',
-  color: '#333',
-  fontWeight: '500',
-},
-
-rightNav: {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
-},
-
-  logo: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    color: '#d3b1f2',
-  },
-  searchBar: {
-    width: '400px',
-    padding: '5px 10px',
-    borderRadius: '20px',
-    border: '1px solid #ddd',
-    backgroundColor: '#f5e6ff',
-  },
-  loginBtn: {
-    background: 'none',
-    border: 'none',
-    color: '#999',
-    cursor: 'pointer',
   },
   mainContent: {
     display: 'flex',
@@ -111,20 +57,7 @@ const stores = [
 function Home() {
   return (
     <div style={styles.home}>
-      <nav style={styles.navbar}>
-        <div style={styles.leftNav}>
-            <Link to="/" style={{ ...styles.logo, textDecoration: 'none' }}>너마늘</Link>
-            <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>Create</a>
-            <a href="#" style={styles.navLink}>Board</a>
-            <a href="#" style={styles.navLink}>MyPage</a>
-            </div>
-        </div>
-        <div style={styles.rightNav}>
-            <input type="text" placeholder="+ Search" style={styles.searchBar} />
-            <button style={styles.loginBtn}>🔒 Login</button>
-        </div>
-        </nav>
+      <Navbar /> {/* ✅ 네비게이션 컴포넌트 삽입 */}
 
       <div style={styles.mainContent}>
         <img src="/images/map.png" alt="지역 지도" style={styles.mapImage} />
