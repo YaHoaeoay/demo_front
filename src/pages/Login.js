@@ -106,7 +106,7 @@ function Login() {
         </form>
 
         <div style={styles.signup}>
-          <a href="/register">회원가입</a>
+          <a href="/signup">회원가입</a>
         </div>
       </div>
     </div>
