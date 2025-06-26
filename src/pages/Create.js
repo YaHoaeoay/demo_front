@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 function Create() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: '',
     introduce: '',
@@ -10,34 +13,61 @@ function Create() {
     product: '',
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (isLoading) {
+      setElapsedTime(0);
+      timer = setInterval(() => {
+        setElapsedTime(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isLoading]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleAIImageGenerate = async () => {
+    try {
+      const userText = `
+        상점 이름: ${form.name}
+        소개: ${form.introduce}
+        위치: ${form.location}
+        대표 상품: ${form.product}
+      `;
+
+      const aiFormData = new FormData();
+      aiFormData.append("user_text", userText);
+
+      setIsLoading(true); // 로딩 시작
+
+      const res = await fetch("http://localhost:8000/generate-flyer", {
+        method: "POST",
+        body: aiFormData,
+      });
+
+      if (!res.ok) throw new Error("AI 이미지 생성 실패");
+
+      const data = await res.json();
+
+      // 로딩 종료 후 페이지 이동
+      navigate('/gallery', { state: { images: data.images } });
+    } catch (err) {
+      console.error("AI 생성 오류:", err);
+      alert("AI 이미지 생성에 실패했습니다.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("name", form.name);
-    formData.append("introduce", form.introduce);
-    formData.append("location", form.location);
-    formData.append("google_map_url", form.google_map_url);
-    formData.append("product", form.product);
-
-    try {
-        const res = await fetch("http://localhost:8000/store/submit", {
-        method: "POST",
-        body: formData, // ✅ 자동으로 multipart/form-data로 설정됨
-        });
-
-        if (!res.ok) throw new Error("서버 응답 실패");
-
-        const text = await res.text(); // 템플릿 반환이므로 text()
-        console.log("등록 완료:", text);
-    } catch (err) {
-        console.error("제출 중 오류 발생:", err);
-    }
-    };
+    await handleAIImageGenerate();
+  };
 
   const inputStyle = {
     width: '100%',
@@ -67,70 +97,98 @@ function Create() {
       <Navbar />
       <div style={containerStyle}>
         <h1 style={{ textAlign: 'center', marginBottom: '50px' }}>상점 정보 등록</h1>
-        <form onSubmit={handleSubmit}>
-          <label style={labelStyle}>상점 이름</label>
-          <input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            style={inputStyle}
-          />
 
-          <label style={labelStyle}>한줄 소개(30자 이상)</label>
-          <input
-            type="text"
-            name="introduce"
-            value={form.introduce}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <label style={labelStyle}>위치(예시: 경상북도 의성군 옥산면 새마을로 45)</label>
-          <input
-            type="text"
-            name="location"
-            value={form.location}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <label style={labelStyle}>Google Map URL</label>
-          <input
-            type="text"
-            name="google_map_url"
-            value={form.google_map_url}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <label style={labelStyle}>대표 상품</label>
-          <input
-            type="text"
-            name="product"
-            value={form.product}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
+        {isLoading ? (
           <div style={{ textAlign: 'center' }}>
-            <button
-              type="submit"
-              style={{
-                padding: '10px 30px',
-                backgroundColor: '#d3b1f2',
-                color: '#000',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                cursor: 'pointer',
-              }}
-            >
-              등록하기
-            </button>
+            <div className="spinner" style={{ marginBottom: '20px' }}>
+              <div className="loader"></div>
+            </div>
+            <p>AI 전단지 생성 중... ⏱️ {elapsedTime}초</p>
           </div>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <label style={labelStyle}>상점 이름</label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <label style={labelStyle}>한줄 소개(30자 이상)</label>
+            <input
+              type="text"
+              name="introduce"
+              value={form.introduce}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <label style={labelStyle}>위치(예시: 경상북도 의성군 옥산면 새마을로 45)</label>
+            <input
+              type="text"
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <label style={labelStyle}>Google Map URL</label>
+            <input
+              type="text"
+              name="google_map_url"
+              value={form.google_map_url}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <label style={labelStyle}>대표 상품</label>
+            <input
+              type="text"
+              name="product"
+              value={form.product}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <div style={{ textAlign: 'center' }}>
+              <button
+                type="submit"
+                style={{
+                  padding: '10px 30px',
+                  backgroundColor: '#d3b1f2',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                }}
+              >
+                등록하기
+              </button>
+            </div>
+          </form>
+        )}
       </div>
+
+      {/* 간단한 로딩 애니메이션 스타일 */}
+      <style>{`
+        .loader {
+          border: 8px solid #eee;
+          border-top: 8px solid #b38ce7;
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          animation: spin 1s linear infinite;
+          margin: 0 auto;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

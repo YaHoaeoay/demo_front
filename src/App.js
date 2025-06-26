@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Create from './pages/Create';
 import Login from './pages/Login';      // 추가
 import Register from './pages/Register'; // 추가
+import FlyerGallery from './pages/FlyerGallery';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/create" element={<Create />} />
         <Route path="/login" element={<Login />} />         {/* 로그인 */}
         <Route path="/register" element={<Register />} />   {/* 회원가입 */}
+        <Route path="/Gallery" element={<FlyerGallery />} /> 
       </Routes>
     </Router>
   );
