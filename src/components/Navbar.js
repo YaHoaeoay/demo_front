@@ -43,10 +43,10 @@ const styles = {
     backgroundColor: '#f5e6ff',
   },
   loginBtn: {
-    background: 'none',
-    border: 'none',
+    textDecoration: 'none',
     color: '#999',
-    cursor: 'pointer',
+    fontSize: '0.95rem',
+    fontWeight: '500',
   },
 };
 
@@ -63,7 +63,7 @@ function Navbar() {
       </div>
       <div style={styles.rightNav}>
         <input type="text" placeholder="+ Search" style={styles.searchBar} />
-        <button style={styles.loginBtn}>🔒 Logout</button>
+        <Link to="/login" style={styles.loginBtn}>로그인</Link>
       </div>
     </nav>
   );

@@ -1,7 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import Home from './pages/Home';
 import Create from './pages/Create';
+import Login from './pages/Login';      // 추가
+import Register from './pages/Register'; // 추가
 
 function App() {
   return (
@@ -9,6 +12,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/create" element={<Create />} />
+        <Route path="/login" element={<Login />} />         {/* 로그인 */}
+        <Route path="/register" element={<Register />} />   {/* 회원가입 */}
       </Routes>
     </Router>
   );
