@@ -53,11 +53,29 @@ const styles = {
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [nickname, setNickname] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     const userId = Cookies.get('user_id');
-    setIsLoggedIn(!!userId);
+    if (userId) {
+      setIsLoggedIn(true);
+
+      // ✅ 닉네임 받아오기
+      fetch('http://localhost:8000/api/profile', {
+        method: 'GET',
+        credentials: 'include',
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('닉네임 불러오기 실패');
+          return res.json();
+        })
+        .then((data) => setNickname(data.nickname))
+        .catch((err) => {
+          console.error(err);
+          setNickname('');
+        });
+    }
   }, []);
 
   const handleLogout = () => {
@@ -69,6 +87,7 @@ function Navbar() {
       .then(() => {
         Cookies.remove('user_id');  // 쿠키 클라이언트에서도 제거
         setIsLoggedIn(false);
+        setNickname('');
         navigate('/');
       })
       .catch((err) => {
@@ -88,22 +107,27 @@ function Navbar() {
       </div>
       <div style={styles.rightNav}>
         <input type="text" placeholder="+ Search" style={styles.searchBar} />
+        {isLoggedIn && (
+          <span style={styles.nickname}>
+            {nickname} 님
+          </span>
+        )}
         {isLoggedIn ? (
-  <button
-    onClick={handleLogout}
-    style={{
-      ...styles.loginBtn,
-      background: 'none',
-      border: 'none',
-      padding: 0,
-      cursor: 'pointer',
-    }}
-  >
-    로그아웃
-  </button>
-) : (
-  <Link to="/login" style={styles.loginBtn}>로그인</Link>
-)}
+          <button
+            onClick={handleLogout}
+            style={{
+              ...styles.loginBtn,
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+            }}
+          >
+            로그아웃
+          </button>
+        ) : (
+          <Link to="/login" style={styles.loginBtn}>로그인</Link>
+        )}
       </div>
     </nav>
   );
