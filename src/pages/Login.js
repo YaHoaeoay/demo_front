@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const styles = {
   navbar: {
@@ -28,7 +28,7 @@ const styles = {
     border: "1px solid #ccc",
     borderRadius: "4px",
     backgroundColor: "#f8ecff",
-    boxSizing: "border-box",
+    boxSizing: "border-box",  // ✅ 추가
   },
   checkboxWrap: {
     display: "flex",
@@ -57,36 +57,30 @@ const styles = {
 function Login() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-        const response = await fetch("http://localhost:8000/api/login", {
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("password", password);
+
+      const res = await fetch("http://localhost:8000/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        credentials: "include", // 쿠키 저장을 위해 반드시 필요
-        body: new URLSearchParams({
-          id: id,
-          password: password
-        }),
+        body: formData,
+        credentials: "include",
       });
 
-
-        if (response.redirected) {
-        // FastAPI에서 RedirectResponse("/")를 주면 여기에 걸림
-        window.location.href = response.url; // 홈으로 이동
-        } else {
-        const html = await response.text();
-        if (html.includes("비밀번호가 일치하지 않습니다") || html.includes("존재하지 않는")) {
-            alert("로그인 실패: 아이디 또는 비밀번호를 확인하세요.");
-        }
-        }
-    } catch (error) {
-        console.error("로그인 요청 실패:", error);
-        alert("서버 오류가 발생했습니다.");
+      if (res.status === 200) {
+        // ✅ 로그인 성공 시 홈으로 이동
+        navigate("/");
+      } else {
+        const data = await res.json();
+      }
+    } catch (err) {
+      console.error("로그인 요청 중 오류:", err);
     }
   };
 
