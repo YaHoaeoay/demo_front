@@ -6,12 +6,10 @@ function Create() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    name: '',
-    introduce: '',
-    location: '',
-    google_map_url: '',
-    product: '',
-  });
+  name: '',
+  introduce: '',
+  location: '',
+});
 
   const [isLoading, setIsLoading] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -37,7 +35,6 @@ function Create() {
         상점 이름: ${form.name}
         소개: ${form.introduce}
         위치: ${form.location}
-        대표 상품: ${form.product}
       `;
 
       const aiFormData = new FormData();
@@ -130,24 +127,6 @@ function Create() {
               type="text"
               name="location"
               value={form.location}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <label style={labelStyle}>Google Map URL</label>
-            <input
-              type="text"
-              name="google_map_url"
-              value={form.google_map_url}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <label style={labelStyle}>대표 상품</label>
-            <input
-              type="text"
-              name="product"
-              value={form.product}
               onChange={handleChange}
               style={inputStyle}
             />

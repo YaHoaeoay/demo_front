@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const styles = {
   navbar: {
@@ -28,7 +28,7 @@ const styles = {
     border: "1px solid #ccc",
     borderRadius: "4px",
     backgroundColor: "#f8ecff",
-    boxSizing: "border-box",  // ✅ 추가
+    boxSizing: "border-box",
   },
   checkboxWrap: {
     display: "flex",
@@ -57,13 +57,11 @@ const styles = {
 function Login() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-<<<<<<< HEAD
         const response = await fetch("http://localhost:8000/api/login", {
         method: "POST",
         headers: {
@@ -90,30 +88,7 @@ function Login() {
         console.error("로그인 요청 실패:", error);
         alert("서버 오류가 발생했습니다.");
     }
-    };
-
-=======
-      const formData = new FormData();
-      formData.append("id", id);
-      formData.append("password", password);
-
-      const res = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      if (res.status === 200) {
-        // ✅ 로그인 성공 시 홈으로 이동
-        navigate("/");
-      } else {
-        const data = await res.json();
-      }
-    } catch (err) {
-      console.error("로그인 요청 중 오류:", err);
-    }
   };
->>>>>>> f39e9d4258b7e510ef4880d772a3792c14478ead
 
   return (
     <div>
