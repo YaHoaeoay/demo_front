@@ -43,24 +43,24 @@ function Create() {
       const aiFormData = new FormData();
       aiFormData.append("user_text", userText);
 
-      setIsLoading(true); // 로딩 시작
+      setIsLoading(true);
 
-      const res = await fetch("http://localhost:8000/generate-flyer", {
+      const res = await fetch("http://localhost:8000/generate-flyer/image", {
         method: "POST",
         body: aiFormData,
       });
 
       if (!res.ok) throw new Error("AI 이미지 생성 실패");
 
-      const data = await res.json();
+      const blob = await res.blob(); // 이미지 파일로 받기
+      const imageUrl = URL.createObjectURL(blob);
 
-      // 로딩 종료 후 페이지 이동
-      navigate('/gallery', { state: { images: data.images } });
+      navigate('/gallery', { state: { images: [imageUrl] } });
     } catch (err) {
       console.error("AI 생성 오류:", err);
       alert("AI 이미지 생성에 실패했습니다.");
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
     }
   };
 
@@ -125,7 +125,7 @@ function Create() {
               style={inputStyle}
             />
 
-            <label style={labelStyle}>위치(예시: 경상북도 의성군 옥산면 새마을로 45)</label>
+            <label style={labelStyle}>위치</label>
             <input
               type="text"
               name="location"
@@ -172,7 +172,6 @@ function Create() {
         )}
       </div>
 
-      {/* 간단한 로딩 애니메이션 스타일 */}
       <style>{`
         .loader {
           border: 8px solid #eee;

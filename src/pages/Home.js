@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar'; // ✅ 공통 네비게이션 컴포넌트 import
 
 const styles = {
@@ -8,71 +8,65 @@ const styles = {
   },
   mainContent: {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: '40px',
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
+    gap: '60px',
   },
   mapImage: {
-    width: '50%',
+    width: '40%',
+    maxWidth: '400px',
+    height: 'auto',
+    borderRadius: '12px',
   },
-  storeList: {
-    width: '35%',
-  },
-  storeItem: {
+  posterContainer: {
     display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: '20px',
+    gap: '15px',
   },
-  storeImage: {
-    width: '60px',
-    height: '60px',
-    marginRight: '15px',
+  arrowButton: {
+    fontSize: '24px',
+    cursor: 'pointer',
+    userSelect: 'none',
+    background: 'none',
+    border: 'none',
   },
-  storeInfo: {
-    marginTop: '0',
+  posterImage: {
+    width: '250px',
+    height: 'auto',
+    borderRadius: '12px',
   },
 };
 
-const stores = [
-  {
-    name: '우리집 당근이지',
-    rating: 4.0,
-    description: '눈에 좋은 귀여운 당근이지',
-    image: '/images/carrot.png',
-  },
-  {
-    name: '여긴채소',
-    rating: 4.0,
-    description: '몸에 좋은 채소 본비에채소는 더 싸요',
-    image: '/images/veggie.png',
-  },
-  {
-    name: '메가음료',
-    rating: 4.0,
-    description: '음료 팔아 드시펍빠',
-    image: '/images/drink.png',
-  },
+const posterImages = [
+  '/images/poster1.jpg',
+  '/images/poster2.jpg',
+  '/images/poster3.jpg',
 ];
 
 function Home() {
+  const [posterIndex, setPosterIndex] = useState(0);
+
+  const handlePrev = () => {
+    setPosterIndex((prevIndex) => (prevIndex - 1 + posterImages.length) % posterImages.length);
+  };
+
+  const handleNext = () => {
+    setPosterIndex((prevIndex) => (prevIndex + 1) % posterImages.length);
+  };
+
   return (
     <div style={styles.home}>
-      <Navbar /> {/* ✅ 네비게이션 컴포넌트 삽입 */}
+      <Navbar /> {/* ✅ 네비게이션 컴포넌트 */}
 
       <div style={styles.mainContent}>
         <img src="/images/map.png" alt="지역 지도" style={styles.mapImage} />
-        <div style={styles.storeList}>
-          <h3>Store List</h3>
-          {stores.map((store, index) => (
-            <div key={index} style={styles.storeItem}>
-              <img src={store.image} alt={store.name} style={styles.storeImage} />
-              <div style={styles.storeInfo}>
-                <strong>{store.name}</strong>
-                <div>⭐ ({store.rating.toFixed(1)})</div>
-                <p>{store.description}</p>
-              </div>
-            </div>
-          ))}
+
+        <div style={styles.posterContainer}>
+          <button style={styles.arrowButton} onClick={handlePrev}>◀</button>
+          <img src={posterImages[posterIndex]} alt={`포스터 ${posterIndex + 1}`} style={styles.posterImage} />
+          <button style={styles.arrowButton} onClick={handleNext}>▶</button>
         </div>
       </div>
     </div>
