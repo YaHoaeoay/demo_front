@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const styles = {
   navbar: {
@@ -57,11 +57,13 @@ const styles = {
 function Login() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+<<<<<<< HEAD
         const response = await fetch("http://localhost:8000/api/login", {
         method: "POST",
         headers: {
@@ -90,6 +92,28 @@ function Login() {
     }
     };
 
+=======
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("password", password);
+
+      const res = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      if (res.status === 200) {
+        // ✅ 로그인 성공 시 홈으로 이동
+        navigate("/");
+      } else {
+        const data = await res.json();
+      }
+    } catch (err) {
+      console.error("로그인 요청 중 오류:", err);
+    }
+  };
+>>>>>>> f39e9d4258b7e510ef4880d772a3792c14478ead
 
   return (
     <div>
@@ -133,7 +157,7 @@ function Login() {
         </form>
 
         <div style={styles.signup}>
-          <a href="/register">회원가입</a>
+          <a href="/signup">회원가입</a>
         </div>
       </div>
     </div>

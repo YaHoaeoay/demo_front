@@ -48,20 +48,40 @@ function Register() {
     id: "",
     nickname: "",
     password: "",
-    confirmPassword: "",
-    birth: "",
-    phone: "",
+    password_check: "",
+    birthday: "",
+    phone_number: "",
   });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("회원가입 정보:", form);
-    // 회원가입 처리 로직
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData();
+  formData.append("name", form.name);
+  formData.append("id", form.id);
+  formData.append("nickname", form.nickname);
+  formData.append("password", form.password);
+  formData.append("password_check", form.password_check);
+  formData.append("birthday", form.birthday);
+  formData.append("phone_number", form.phone_number);
+
+  try {
+    const res = await fetch("http://localhost:8000/signup", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("서버 응답 오류");
+    const text = await res.text();
+    console.log("회원가입 완료:", text);
+  } catch (err) {
+    console.error("회원가입 중 오류 발생:", err);
+  }
+};
 
   return (
     <div>
@@ -105,23 +125,23 @@ function Register() {
           />
           <input
             type="password"
-            name="confirmPassword"
+            name="password_check"
             placeholder="Password Again"
-            value={form.confirmPassword}
+            value={form.password_check}
             onChange={handleChange}
             style={styles.input}
           />
           <input
-            name="birth"
-            placeholder="생년월일 (예: 000101)"
-            value={form.birth}
+            name="birthday"
+            placeholder="생년월일 (예: 000101-1)"
+            value={form.birthday}
             onChange={handleChange}
             style={styles.input}
           />
           <input
-            name="phone"
+            name="phone_number"
             placeholder="전화번호 (예: 010-1234-5678)"
-            value={form.phone}
+            value={form.phone_number}
             onChange={handleChange}
             style={styles.input}
           />
