@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const styles = {
   navbar: {
@@ -51,6 +52,30 @@ const styles = {
 };
 
 function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userId = Cookies.get('user_id');
+    setIsLoggedIn(!!userId);
+  }, []);
+
+  const handleLogout = () => {
+    // FastAPI 로그아웃 API 호출
+    fetch('http://localhost:8000/logout', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then(() => {
+        Cookies.remove('user_id');  // 쿠키 클라이언트에서도 제거
+        setIsLoggedIn(false);
+        navigate('/');
+      })
+      .catch((err) => {
+        console.error("로그아웃 실패:", err);
+      });
+  };
+
   return (
     <nav style={styles.navbar}>
       <div style={styles.leftNav}>
@@ -63,7 +88,22 @@ function Navbar() {
       </div>
       <div style={styles.rightNav}>
         <input type="text" placeholder="+ Search" style={styles.searchBar} />
-        <Link to="/login" style={styles.loginBtn}>로그인</Link>
+        {isLoggedIn ? (
+  <button
+    onClick={handleLogout}
+    style={{
+      ...styles.loginBtn,
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      cursor: 'pointer',
+    }}
+  >
+    로그아웃
+  </button>
+) : (
+  <Link to="/login" style={styles.loginBtn}>로그인</Link>
+)}
       </div>
     </nav>
   );

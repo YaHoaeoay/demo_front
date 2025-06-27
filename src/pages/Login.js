@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const styles = {
   navbar: {
@@ -57,11 +57,31 @@ const styles = {
 function Login() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("로그인 정보:", { id, password });
-    // TODO: 로그인 처리 로직
+
+    try {
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("password", password);
+
+      const res = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      if (res.status === 200) {
+        // ✅ 로그인 성공 시 홈으로 이동
+        navigate("/");
+      } else {
+        const data = await res.json();
+      }
+    } catch (err) {
+      console.error("로그인 요청 중 오류:", err);
+    }
   };
 
   return (
